@@ -9,6 +9,10 @@ Created on Wed Sep 13 08:38:30 2023
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Set a random seed for reproducibility
+seed_value = 42
+np.random.seed(seed_value)
+
 # Define parameters for the GBM
 mu = 0.05  # Drift
 sigma = 0.3  # Volatility
@@ -40,20 +44,49 @@ fig, ax1 = plt.subplots()
 
 # Plot GBM on the left y-axis
 ax1.set_xlabel('Time')
-ax1.set_ylabel(r'$x_A, x_B$', color='tab:blue')
-ax1.plot(t, S, color='tab:blue')
-ax1.plot(t, S2, color='tab:blue')
-ax1.tick_params(axis='y', labelcolor='tab:blue')
+ax1.set_ylabel(r'$f(x_A), f(x_B)$', color='tab:red')
+ax1.plot(t, np.log(S), color='tab:red', zorder=2)
+ax1.plot(t, np.log(S2), color='tab:red', zorder=2)
+ax1.tick_params(axis='y', labelcolor='tab:red')
 
 # Create a twin y-axis for the logarithm
 ax2 = ax1.twinx()
-ax2.set_ylabel(r'$f(x_A), f(x_B)$', color='tab:red')
-ax2.plot(t, np.log(S), color='tab:red')
-ax2.plot(t, np.log(S2), color='tab:red')
-ax2.tick_params(axis='y', labelcolor='tab:red')
+ax2.set_ylabel(r'$x_A, x_B$', color='tab:blue')
+ax2.plot(t, S, color='tab:blue', zorder=2)
+ax2.plot(t, S2, color='tab:blue', zorder=2)
+ax2.tick_params(axis='y', labelcolor='tab:blue')
 
 # Title and labels
 plt.xlabel('Time')
 
+# Save the plot as a PDF file
+plt.savefig('ergodicity_transform_1.pdf', format='pdf')
+
 # Display the plot
 plt.show()
+
+
+dS=S[:-1]-S[1:]
+dS2=S2[:-1]-S2[1:]
+# Create the figure and axes
+fig, ax3 = plt.subplots()
+
+# Plot GBM on the left y-axis
+ax3.set_xlabel('Time')
+ax3.set_ylabel(r'$\delta f(x_A), \delta f(x_B)$', color='tab:red')
+ax3.plot(t[:-1], np.log(S[:-1])-np.log(S[1:]), color='tab:red',linewidth=.1)
+ax3.plot(t[:-1], np.log(S2[:-1])-np.log(S2[1:]), color='tab:red', alpha=1,linewidth=.1)
+ax3.tick_params(axis='y', labelcolor='tab:red')
+
+# Create a twin y-axis for the logarithm
+ax4 = ax3.twinx()
+ax4.set_ylabel(r'$\delta x_A, \delta x_B$', color='tab:blue')
+ax4.plot(t[:-1], dS, color='tab:blue')
+ax4.plot(t[:-1], dS2, color='tab:blue')
+ax4.tick_params(axis='y', labelcolor='tab:blue')
+
+# Title and labels
+plt.xlabel('Time')
+
+# Save the plot as a PDF file
+plt.savefig('ergodicity_transform_2.pdf', format='pdf')
