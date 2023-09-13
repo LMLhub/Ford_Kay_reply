@@ -47,6 +47,8 @@ plt.plot(x2, pdfnorm2, color='tab:red', linestyle='-', label='density of $u(y_B)
 plt.legend()
 plt.xlabel('x, u(x)')
 plt.ylabel('probability density')
+plt.xlim(-1.5, 2.5)  # Set the minimum and maximum y-values
+plt.ylim(0, 1.1)  # Set the minimum and maximum y-values
 
 # Save the plot as a PDF file
 plt.savefig('eut.pdf', format='pdf')
