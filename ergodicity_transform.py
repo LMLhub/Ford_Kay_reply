@@ -39,24 +39,30 @@ W2 = np.cumsum(W) * np.sqrt(dt)  # Brownian motion
 X2 = (mu2 - 0.5 * sigma2**2) * t + sigma * W
 S2 = S0 * np.exp(X2)  # Geometric Brownian motion
 
+
+lightblue = (173/255, 216/255, 230/255)  # (R, G, B)
 # Create the figure and axes
 fig, ax1 = plt.subplots()
 
 # Plot GBM on the left y-axis
 ax1.set_xlabel('Time')
-ax1.set_ylabel(r'$f(x_A), f(x_B)$', color='tab:red')
-ax1.plot(t, np.log(S), color='tab:red', zorder=2)
-ax1.plot(t, np.log(S2), color='tab:red', zorder=2)
+ax1.set_ylabel(r'$f$', color='tab:red')
+ax1.plot(t, np.log(S), color='tab:red', zorder=2,label=r'$f(x_A(t))$')
+ax1.plot(t, np.log(S2), color='tab:pink',linestyle='-', zorder=2,label=r'$f(x_B(t))$')
+ax1.plot([t[0],t[-1]], [np.log(S)[0],np.log(S)[-1]], color='tab:red', zorder=2)
+ax1.plot([t[0],t[-1]], [np.log(S2)[0],np.log(S2)[-1]],linestyle='-',color='tab:pink', zorder=2)
 ax1.tick_params(axis='y', labelcolor='tab:red')
 
 # Create a twin y-axis for the logarithm
 ax2 = ax1.twinx()
-ax2.set_ylabel(r'$x_A, x_B$', color='tab:blue')
-ax2.plot(t, S, color='tab:blue', zorder=2)
-ax2.plot(t, S2, color='tab:blue', zorder=2)
+ax2.set_ylabel(r'$x$', color='tab:blue')
+ax2.plot(t, S, color='blue', zorder=2,label=r'$x_A(t)$')
+ax2.plot(t, S2, color=lightblue, zorder=2,label=r'$x_B(t)$')
 ax2.tick_params(axis='y', labelcolor='tab:blue')
-
 # Title and labels
+ax1.legend()
+ax2.legend(loc='upper center')  # Adjust the bbox_to_anchor parameter
+
 plt.xlabel('Time')
 
 # Save the plot as a PDF file
@@ -73,20 +79,22 @@ fig, ax3 = plt.subplots()
 
 # Plot GBM on the left y-axis
 ax3.set_xlabel('Time')
-ax3.set_ylabel(r'$\delta f(x_A), \delta f(x_B)$', color='tab:red')
-ax3.plot(t[:-1], np.log(S[:-1])-np.log(S[1:]), color='tab:red',linewidth=.1)
-ax3.plot(t[:-1], np.log(S2[:-1])-np.log(S2[1:]), color='tab:red', alpha=1,linewidth=.1)
+ax3.set_ylabel(r'$\delta f(x)$', color='tab:red')
+ax3.plot(t[:-1], np.log(S[:-1])-np.log(S[1:]), color='tab:red',linewidth=1)
+ax3.plot(t[:-1], np.log(S2[:-1])-np.log(S2[1:]), color='tab:pink', alpha=1,linewidth=1)
 ax3.tick_params(axis='y', labelcolor='tab:red')
 
 # Create a twin y-axis for the logarithm
 ax4 = ax3.twinx()
-ax4.set_ylabel(r'$\delta x_A, \delta x_B$', color='tab:blue')
-ax4.plot(t[:-1], dS, color='tab:blue')
-ax4.plot(t[:-1], dS2, color='tab:blue')
+ax4.set_ylabel(r'$\delta x$', color='tab:blue')
+ax4.plot(t[:-1], dS, color='blue')
+ax4.plot(t[:-1], dS2, color=lightblue)
 ax4.tick_params(axis='y', labelcolor='tab:blue')
 
 # Title and labels
 plt.xlabel('Time')
+plt.xlim([0,500])
+plt.ylim([0,10000])
 
 # Save the plot as a PDF file
 plt.savefig('ergodicity_transform_2.pdf', format='pdf')
