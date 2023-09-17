@@ -41,27 +41,30 @@ S2 = S0 * np.exp(X2)  # Geometric Brownian motion
 
 
 lightblue = (173/255, 216/255, 230/255)  # (R, G, B)
+fs=15
 # Create the figure and axes
 fig, ax1 = plt.subplots()
 
 # Plot GBM on the left y-axis
-ax1.set_xlabel('Time')
-ax1.set_ylabel(r'$f$', color='tab:red')
+ax1.set_xlabel('Time',fontsize=fs)
+ax1.set_ylabel(r'$f$', color='tab:red',fontsize=fs)
 ax1.plot(t, np.log(S), color='tab:red', zorder=2,label=r'$f(x_A(t))$')
 ax1.plot(t, np.log(S2), color='tab:pink',linestyle='-', zorder=2,label=r'$f(x_B(t))$')
 ax1.plot([t[0],t[-1]], [np.log(S)[0],np.log(S)[-1]], color='tab:red', zorder=2)
 ax1.plot([t[0],t[-1]], [np.log(S2)[0],np.log(S2)[-1]],linestyle='-',color='tab:pink', zorder=2)
-ax1.tick_params(axis='y', labelcolor='tab:red')
+ax1.tick_params(axis='y', labelcolor='tab:red',labelsize=fs)
+ax1.tick_params(axis='x',labelsize=fs)
 
 # Create a twin y-axis for the logarithm
 ax2 = ax1.twinx()
-ax2.set_ylabel(r'$x$', color='tab:blue')
+ax2.set_ylabel(r'$x$', color='tab:blue',fontsize=fs)
 ax2.plot(t, S, color='blue', zorder=2,label=r'$x_A(t)$')
 ax2.plot(t, S2, color=lightblue, zorder=2,label=r'$x_B(t)$')
-ax2.tick_params(axis='y', labelcolor='tab:blue')
+ax2.tick_params(axis='y', labelcolor='tab:blue',labelsize=fs)
+ax2.tick_params(axis='x', labelcolor='tab:blue',labelsize=fs)
 # Title and labels
-ax1.legend()
-ax2.legend(loc='upper center')  # Adjust the bbox_to_anchor parameter
+ax1.legend(fontsize=fs)
+ax2.legend(loc='upper center',fontsize=fs)  # Adjust the bbox_to_anchor parameter
 
 plt.xlabel('Time')
 
