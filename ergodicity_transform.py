@@ -6,8 +6,8 @@ Created on Wed Sep 13 08:38:30 2023
 @author: ole
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Set a random seed for reproducibility
 seed_value = 42
@@ -30,13 +30,15 @@ t = np.arange(0, T+dt, dt)
 # Generate GBM data
 W = np.random.randn(len(t))
 W = np.cumsum(W) * np.sqrt(dt)  # Brownian motion
-X = (mu - 0.5 * sigma**2) * t + sigma * W
+G = (mu - 0.5 * sigma**2)
+X = G * t + sigma * W
 S = S0 * np.exp(X)  # Geometric Brownian motion
 
 # Generate GBM data
 W2 = np.random.randn(len(t))
 W2 = np.cumsum(W) * np.sqrt(dt)  # Brownian motion
-X2 = (mu2 - 0.5 * sigma2**2) * t + sigma * W
+G2 = (mu2 - 0.5 * sigma2**2)
+X2 = G2 * t + sigma * W
 S2 = S0 * np.exp(X2)  # Geometric Brownian motion
 
 
@@ -50,8 +52,8 @@ ax1.set_xlabel('Time',fontsize=fs)
 ax1.set_ylabel(r'$f$', color='tab:red',fontsize=fs)
 ax1.plot(t, np.log(S), color='tab:red', zorder=2,label=r'$f(x_A(t))$')
 ax1.plot(t, np.log(S2), color='tab:pink',linestyle='-', zorder=2,label=r'$f(x_B(t))$')
-ax1.plot([t[0],t[-1]], [np.log(S)[0],np.log(S)[-1]], color='tab:red', zorder=2)
-ax1.plot([t[0],t[-1]], [np.log(S2)[0],np.log(S2)[-1]],linestyle='-',color='tab:pink', zorder=2)
+ax1.plot(t, G * t, color='tab:red', zorder=2)
+ax1.plot(t, G2 * t,linestyle='-',color='tab:pink', zorder=2)
 ax1.tick_params(axis='y', labelcolor='tab:red',labelsize=fs)
 ax1.tick_params(axis='x',labelsize=fs)
 
