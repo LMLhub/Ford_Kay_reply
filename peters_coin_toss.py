@@ -9,6 +9,7 @@ Created on Wed Sep 20 12:24:54 2023
 import matplotlib.pyplot as plt
 import numpy as np
 from fig_style_config import figure_size, font_size, label_font_size, legend_font_size, line_width
+from random import shuffle
 
 # Set Matplotlib style parameters
 plt.rcParams.update({
@@ -26,7 +27,7 @@ X0 = 1.0
 T = 750
 M = 50
 g = 21/20
-r = 5/20
+r = 9/20
 
 # Define analytical formulae
 def ExpectedxT(X0, t, g, r):
@@ -88,8 +89,13 @@ ax.set(yscale = 'log',
        xlabel = 'Time',
        ylabel = 'XT')
 
+# Generate a spread of greyscale colours for the trajectories to make it clearer
+# that there are many
+C = [(i/M,i/M,i/M) for i in range(0,M+1)]
+shuffle(C)
+
 for i in range(M):
-    ax.plot(range(T+1), X[:, i], color='grey', alpha = 0.5)
+    ax.plot(range(T+1), X[:, i], color=C[i], alpha = 0.5)
 ax.plot([], color = 'grey', alpha = 0.5, label = '$X_T$ sample trajectories')
 ax.plot(range(T+1), expectedValue, label='$X_T$ expectation', color='blue')
 ax.plot(range(T+1), typicalValue, label='$X_T$ most likely value', color='green')
@@ -97,7 +103,7 @@ ax.plot(range(T+1), spreadUpperValues, label='Uncertainty interval', color='oran
 ax.plot(range(T+1), spreadLowerValues, color='orange')
 
 ax.legend(loc='upper left')
-fig.savefig("peters_coin_toss1.pdf", dpi=300, bbox_inches='tight', format='pdf')
+fig.savefig("wealth_trajectories.pdf", dpi=300, bbox_inches='tight', format='pdf')
 plt.close(fig)
 
 # Calculate expected growth rate values
@@ -106,15 +112,15 @@ expectedValueGrowthRate = np.array([ExpectedgammaT(g, r) for t in range(T+1)])
 # Create plots for growth rate trajectories
 fig, ax = plt.subplots()
 ax.set(xlabel = 'Time',
-       ylabel = '$\gamma_T$')
+       ylabel = '$g_T$')
 
 for i in range(M):
-    ax.plot(range(T+1), gamma[:, i], color = 'grey', alpha = 0.5)
+    ax.plot(range(T+1), gamma[:, i], color = C[i], alpha = 0.5)
 
-ax.plot(range(T+1), expectedValueGrowthRate, label='$\gamma_T$ expectation', color='blue')
-ax.plot([], color = 'grey', alpha = 0.5, label = 'Sample $\gamma$ trajectories')
+ax.plot(range(T+1), expectedValueGrowthRate, label='$g_T$ expectation', color='blue')
+ax.plot([], color = 'grey', alpha = 0.5, label = 'Sample $g_T$ trajectories')
 
 ax.axvline(x=Tstar(g,r), color='gray', linestyle='--', label= '$T^*$')
 
 ax.legend(loc='upper right')
-fig.savefig("peters_coin_toss2.pdf", dpi=300, bbox_inches='tight', format='pdf')
+fig.savefig("growth_rate_trajectories.pdf", dpi=300, bbox_inches='tight', format='pdf')
