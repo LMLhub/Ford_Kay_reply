@@ -2,29 +2,39 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Sep 13 12:04:23 2023
-
 @author: ole
 """
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import norm
-from scipy.stats import lognorm
+from fig_style_config import figure_size, font_size, label_font_size, legend_font_size, line_width
+from scipy.stats import lognorm, norm
+
+# Set Matplotlib style parameters
+plt.rcParams.update({
+    'font.size': font_size,
+    'lines.linewidth': line_width,
+    'figure.figsize': figure_size,
+    'legend.fontsize': legend_font_size,
+    'xtick.labelsize': label_font_size,
+    'ytick.labelsize': label_font_size,
+    'axes.labelsize': label_font_size
+})
 
 # Parameters for the normal distributions (of utility)
-mu1 = np.mean([np.log(1.5),np.log(.6)])  # Mean
-sigma1 = np.std([np.log(.6),np.log(1.5)])  # Standard deviation
-mu2 = .1  # Mean
-sigma2 = .6  # Standard deviation
+mu1 = np.mean([np.log(1.5), np.log(.6)])
+sigma1 = np.std([np.log(.6), np.log(1.5)])
+mu2 = .1
+sigma2 = .6
 
 # Implied parameters for the log-normal distributions of wealth
-s1 = sigma1 #np.sqrt(np.log(1 + (sigma1**2 / mu1**2)))  # Shape parameter
-scale1 = np.exp(mu1)  # Scale parameter, set to exp(mean_log(x))
-s2 = sigma2 #np.sqrt(np.log(1 + (sigma2**2 / mu2**2)))  # Shape parameter
-scale2 = np.exp(mu2)  # Scale parameter, set to exp(mean_log(x))
+s1 = sigma1
+scale1 = np.exp(mu1)
+s2 = sigma2
+scale2 = np.exp(mu2)
 
 # Generate data points for the x-axis
-x = np.linspace(0.0, 2.5, 1000)  # Start from a small value to avoid log(0)
+x = np.linspace(0.0, 2.5, 1000)
 
 # Calculate the probability density function (PDF) for the log-normal distribution
 pdflog1 = lognorm.pdf(x, s=s1, scale=scale1)
@@ -36,20 +46,20 @@ pdfnorm1 = norm.pdf(x2, loc=mu1, scale=sigma1)
 pdfnorm2 = norm.pdf(x2, loc=mu2, scale=sigma2)
 
 # Create the plot
-plt.figure(figsize=(8, 5))
-plt.plot(x, pdflog1, color='blue', linestyle='--', label='density of $y_A$')
-plt.plot(x, pdflog2, color='blue', linestyle='-',label='density of $y_B$')
+fig, ax = plt.subplots()
+ax.plot(x, pdflog1, color='blue', linestyle='--', label='Density of $y_A$')
+ax.plot(x, pdflog2, color='blue', linestyle='-', label='Density of $y_B$')
 
-plt.plot(x2, pdfnorm1, color='tab:red', linestyle='--', label='density of $u(y_A)$')
-plt.axvline(x=mu1, color='red', linestyle='--', label='')
-plt.axvline(x=mu2, color='red', linestyle='-', label='')
-plt.plot(x2, pdfnorm2, color='tab:red', linestyle='-', label='density of $u(y_B)$')
-plt.legend()
-plt.xlabel('x, u(x)')
-plt.ylabel('probability density')
-plt.xlim(-1.5, 2.5)  # Set the minimum and maximum y-values
-plt.ylim(0, 1.1)  # Set the minimum and maximum y-values
+ax.plot(x2, pdfnorm1, color='tab:red', linestyle='--', label='Density of $u(y_A)$')
+ax.plot(x2, pdfnorm2, color='tab:red', linestyle='-', label='Density of $u(y_B)$')
+ax.axvline(x=mu1, color='red', linestyle='--')
+ax.axvline(x=mu2, color='red', linestyle='-',)
+ax.legend(loc='upper right')
+ax.set(xlabel='x, u(x)',
+       ylabel='Probability Density',
+       xlim=[-1.5, 2.5],
+       ylim=[0, 1.1])
 
 # Save the plot as a PDF file
-plt.savefig('eut.pdf', format='pdf')
-plt.show()
+fig.savefig("eut.pdf", dpi=300, bbox_inches='tight', format='pdf')
+plt.close(fig)

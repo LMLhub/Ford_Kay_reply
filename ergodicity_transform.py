@@ -8,6 +8,19 @@ Created on Wed Sep 13 08:38:30 2023
 
 import matplotlib.pyplot as plt
 import numpy as np
+from fig_style_config import figure_size, font_size, label_font_size, legend_font_size, line_width
+
+# Set Matplotlib style parameters
+plt.rcParams.update({
+    'font.size': font_size,
+    'lines.linewidth': line_width,
+    'figure.figsize': figure_size,
+    'legend.fontsize': legend_font_size,
+    'xtick.labelsize': label_font_size,
+    'ytick.labelsize': label_font_size,
+    'axes.labelsize': label_font_size
+})
+
 
 # Set a random seed for reproducibility
 seed_value = 42
@@ -41,65 +54,58 @@ G2 = (mu2 - 0.5 * sigma2**2)
 X2 = G2 * t + sigma * W
 S2 = S0 * np.exp(X2)  # Geometric Brownian motion
 
-
 lightblue = (173/255, 216/255, 230/255)  # (R, G, B)
-fs=15
-# Create the figure and axes
+
+# Left plot
 fig, ax1 = plt.subplots()
 
 # Plot GBM on the left y-axis
-ax1.set_xlabel('Time',fontsize=fs)
-ax1.set_ylabel(r'$f$', color='tab:red',fontsize=fs)
-ax1.plot(t, np.log(S), color='tab:red', zorder=2,label=r'$f(x_A(t))$')
-ax1.plot(t, np.log(S2), color='tab:pink',linestyle='-', zorder=2,label=r'$f(x_B(t))$')
-ax1.plot(t, G * t, color='tab:red', zorder=2)
-ax1.plot(t, G2 * t,linestyle='-',color='tab:pink', zorder=2)
-ax1.tick_params(axis='y', labelcolor='tab:red',labelsize=fs)
-ax1.tick_params(axis='x',labelsize=fs)
+ax1.plot(t, np.log(S), color='tab:red', linestyle='-', zorder=0, label=r'$f(x_A(t))$')
+ax1.plot(t, np.log(S2), color='tab:pink', linestyle='-', zorder=0, label=r'$f(x_B(t))$')
+ax1.plot(t, G * t, color='tab:red', zorder=1)  # Growth rate 1
+ax1.plot(t, G2 * t, linestyle='-', color='tab:pink', zorder=1)  # Growth rate 2
+ax1.set_ylabel(r'$f$', color='tab:red')
+ax1.tick_params(axis='y', labelcolor='tab:red')
 
 # Create a twin y-axis for the logarithm
 ax2 = ax1.twinx()
-ax2.set_ylabel(r'$x$', color='tab:blue',fontsize=fs)
-ax2.plot(t, S, color='blue', zorder=2,label=r'$x_A(t)$')
-ax2.plot(t, S2, color=lightblue, zorder=2,label=r'$x_B(t)$')
-ax2.tick_params(axis='y', labelcolor='tab:blue',labelsize=fs)
-ax2.tick_params(axis='x', labelcolor='tab:blue',labelsize=fs)
-# Title and labels
-ax1.legend(fontsize=fs)
-ax2.legend(loc='upper center',fontsize=fs)  # Adjust the bbox_to_anchor parameter
+ax2.set_ylabel(r'$x$', color='tab:blue')
+ax2.plot(t, S, color='blue', zorder=-1, label=r'$x_A(t)$')
+ax2.plot(t, S2, color=lightblue, zorder=-1, label=r'$x_B(t)$')
+ax2.tick_params(axis='y', labelcolor='tab:blue')
 
-plt.xlabel('Time')
+# Title and legend
+ax1.set_xlabel('Time')
+
+lines1, labels1 = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', ncol=2)
 
 # Save the plot as a PDF file
-plt.savefig('ergodicity_transform_1.pdf', format='pdf')
+fig.savefig("ergodicity_transform_1.pdf", dpi=300, bbox_inches='tight', format='pdf')
+plt.close(fig)
 
-# Display the plot
-plt.show()
-
-
-dS=S[:-1]-S[1:]
-dS2=S2[:-1]-S2[1:]
-# Create the figure and axes
+# Right plot
 fig, ax3 = plt.subplots()
 
 # Plot GBM on the left y-axis
-ax3.set_xlabel('Time')
+ax3.plot(t[:-1], np.log(S[:-1]) - np.log(S[1:]), color='tab:red')
+ax3.plot(t[:-1], np.log(S2[:-1]) - np.log(S2[1:]), color='tab:pink')
 ax3.set_ylabel(r'$\delta f(x)$', color='tab:red')
-ax3.plot(t[:-1], np.log(S[:-1])-np.log(S[1:]), color='tab:red',linewidth=1)
-ax3.plot(t[:-1], np.log(S2[:-1])-np.log(S2[1:]), color='tab:pink', alpha=1,linewidth=1)
 ax3.tick_params(axis='y', labelcolor='tab:red')
 
 # Create a twin y-axis for the logarithm
 ax4 = ax3.twinx()
+ax4.plot(t[:-1], S[:-1] - S[1:], color='blue')
+ax4.plot(t[:-1], S2[:-1] - S2[1:], color=lightblue)
 ax4.set_ylabel(r'$\delta x$', color='tab:blue')
-ax4.plot(t[:-1], dS, color='blue')
-ax4.plot(t[:-1], dS2, color=lightblue)
 ax4.tick_params(axis='y', labelcolor='tab:blue')
 
 # Title and labels
-plt.xlabel('Time')
-plt.xlim([0,500])
-plt.ylim([0,10000])
+ax3.set_xlabel('Time')
+ax4.set_xlim([0, 500])
+ax4.set_ylim([0, 10000])
 
 # Save the plot as a PDF file
-plt.savefig('ergodicity_transform_2.pdf', format='pdf')
+fig.savefig("ergodicity_transform_2.pdf", dpi=300, bbox_inches='tight', format='pdf')
+plt.close(fig)
